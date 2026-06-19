@@ -24,11 +24,38 @@ import { telemetryService } from "./services/telemetry"
 import { PostHogClientProvider } from "./services/telemetry/providers/posthog/PostHogClientProvider"
 import { ShowMessageType } from "./shared/proto/host/window"
 import { getLatestAnnouncementId } from "./utils/announcements"
+
 /**
- * Performs intialization for Cline that is common to all platforms.
+ * Performs initialisation for Cline that is common to all host platforms
+ * (VS Code desktop, VS Code web, standalone server, etc.).
  *
- * @param context
- * @returns The webview provider
+ * Runs one-time data migrations, wires up external services, and creates
+ * the root {@link WebviewProvider} that owns the chat UI.  The function is
+ * intentionally idempotent — calling it more than once per process is safe
+ * but wasteful.
+ *
+ * Migration order matters: {@link StateManager.initialize} must complete
+ * before any other service reads global state, and
+ * {@link migrateWorkspaceToGlobalStorage} must run before
+ * {@link migrateTaskHistoryToFile} because the history migration reads the
+ * value moved in the workspace migration.
+ *
+ * @param context - The VS Code extension context provided by the
+ *   `activate()` entry-point.  Used to access global/workspace storage and
+ *   subscriptions.
+ * @returns A promise that resolves to the fully initialised
+ *   {@link WebviewProvider}.  Callers should register it with VS Code
+ *   immediately so the sidebar panel can be revealed.
+ *
+ * @example
+ * ```typescript
+ * export async function activate(context: vscode.ExtensionContext) {
+ *   const webview = await initialize(context);
+ *   context.subscriptions.push(
+ *     vscode.window.registerWebviewViewProvider('cline.SidebarProvider', webview)
+ *   );
+ * }
+ * ```
  */
 export async function initialize(context: vscode.ExtensionContext): Promise<WebviewProvider> {
 	try {
@@ -84,6 +111,20 @@ export async function initialize(context: vscode.ExtensionContext): Promise<Webv
 	return webview
 }
 
+/**
+ * Shows a version-update announcement in the VS Code notification area
+ * when the installed extension version differs from the previously stored
+ * version, or when the extension is launched for the first time.
+ *
+ * The announcement is suppressed if the latest announcement ID has already
+ * been shown to the user (to avoid repeatedly notifying on the same build).
+ *
+ * @param context - The VS Code extension context used to read and write
+ *   persistent global state keys (`clineVersion`,
+ *   `lastShownAnnouncementId`).
+ * @returns A promise that resolves when the announcement logic completes.
+ *   Errors are caught internally and logged; they do not propagate.
+ */
 async function showVersionUpdateAnnouncement(context: vscode.ExtensionContext) {
 	// Version checking for autoupdate notification
 	const currentVersion = ExtensionRegistryInfo.version
@@ -117,7 +158,23 @@ async function showVersionUpdateAnnouncement(context: vscode.ExtensionContext) {
 }
 
 /**
- * Performs cleanup when Cline is deactivated that is common to all platforms.
+ * Performs cleanup when Cline is deactivated — common to all host platforms.
+ *
+ * Should be called from the extension's `deactivate()` hook.  Disposes
+ * services in reverse-dependency order: audio first (no dependents),
+ * then telemetry/error services, then the webview instances which may
+ * flush pending messages before closing.
+ *
+ * @returns A promise that resolves when all cleanup tasks have settled.
+ *   Individual failures are swallowed by each service's own `dispose()`
+ *   implementation to avoid blocking the deactivation sequence.
+ *
+ * @example
+ * ```typescript
+ * export async function deactivate() {
+ *   await tearDown();
+ * }
+ * ```
  */
 export async function tearDown(): Promise<void> {
 	// Clean up audio recording service to ensure no orphaned processes
