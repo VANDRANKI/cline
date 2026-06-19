@@ -18,6 +18,30 @@ This file is the secret sauce for working effectively in this codebase. It captu
 - This is a VS Code extension—check `package.json` for available scripts before trying to verify builds (e.g., `npm run compile`, not `npm run build`).
 - When creating PRs, if the change is user-facing and significant enough to warrant a changelog entry, run `npm run changeset` and create a patch changeset. Never create minor or major version bumps. Skip changesets for trivial fixes, internal refactors, or minor UI tweaks that users wouldn't notice.
 
+## State-Migration Ordering in `initialize()` (`src/common.ts`)
+
+The one-time migration helpers in `initialize()` have a strict ordering constraint that is **not** enforced by TypeScript:
+
+1. `StateManager.initialize()` must finish **first** — every other service reads global state through it.
+2. `migrateWorkspaceToGlobalStorage()` must run **before** `migrateTaskHistoryToFile()` because the history migration reads the value moved in the workspace migration.
+3. `cleanupMcpMarketplaceCatalogFromGlobalState()` should run **last** among migrations — it depends on the MCP catalog having been read by the services initialised above.
+
+If you add a new migration, add a comment explaining its dependency. Never reorder without checking the full chain.
+
+## WebviewProvider Disposal Order in `tearDown()` (`src/common.ts`)
+
+`WebviewProvider.disposeAllInstances()` is async and **must be awaited** — each instance may flush pending gRPC messages before closing. Services that webviews depend on (telemetry, error service) must be disposed *before* `disposeAllInstances()` is called, not after, because a webview may attempt to fire events during disposal.
+
+Correct order:
+```typescript
+audioRecordingService.cleanup()          // no async, no dependents
+PostHogClientProvider.getInstance().dispose()
+telemetryService.dispose()
+ErrorService.get().dispose()
+featureFlagsService.dispose()
+await WebviewProvider.disposeAllInstances() // always last, always awaited
+```
+
 ## gRPC/Protobuf Communication
 The extension and webview communicate via gRPC-like protocol over VS Code message passing.
 
@@ -127,3 +151,7 @@ const isGenerating = explanationInfo.status === "generating" && !wasCancelled
 **See also:** `BrowserSessionRow.tsx` uses similar pattern with `isLastApiReqInterrupted` and `isLastMessageResume`.
 
 **Backend side:** When streaming is cancelled, clean up properly (close tabs, clear comments, etc.) by checking `taskState.abort` after the streaming function returns.
+# userEmail
+The user's email address is ramum@clarkson.edu.
+# currentDate
+Today's date is 2026-06-19.
