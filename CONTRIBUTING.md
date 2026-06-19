@@ -119,21 +119,21 @@ We also welcome contributions to our [documentation](https://github.com/cline/cl
     For example, on Debian-based distributions (e.g., Ubuntu), you can install these libraries using apt:
     ```bash
     sudo apt update
-    sudo apt install -y \
-      dbus \
-      libasound2 \
-      libatk-bridge2.0-0 \
-      libatk1.0-0 \
-      libdrm2 \
-      libgbm1 \
-      libgtk-3-0 \
-      libnss3 \
-      libx11-xcb1 \
-      libxcomposite1 \
-      libxdamage1 \
-      libxfixes3 \
-      libxkbfile1 \
-      libxrandr2 \
+    sudo apt install -y \\
+      dbus \\
+      libasound2 \\
+      libatk-bridge2.0-0 \\
+      libatk1.0-0 \\
+      libdrm2 \\
+      libgbm1 \\
+      libgtk-3-0 \\
+      libnss3 \\
+      libx11-xcb1 \\
+      libxcomposite1 \\
+      libxdamage1 \\
+      libxfixes3 \\
+      libxkbfile1 \\
+      libxrandr2 \\
       xvfb
     ```
 
@@ -172,6 +172,12 @@ Anyone can contribute code to Cline, but we ask that you follow these guidelines
       npm run e2e             # Run tests without rebuilding
       npm run test:e2e -- --debug  # Run with interactive debugger
       ```
+    
+    - **Test infrastructure (read before writing a new test):**
+      - A mock API server is started automatically before each test suite and torn down after — no real API keys are needed.
+      - Each test gets an isolated temporary workspace created from fixtures in `src/test/e2e/fixtures/`.
+      - Failed test runs save video recordings to `test-results/` for offline diagnosis.
+      - The `e2e` fixture wires up a single-root workspace; use `e2eMultiRoot` for multi-root workspace scenarios.
     
     - **Writing E2E tests:**
       - Tests are located in `src/test/e2e/`
