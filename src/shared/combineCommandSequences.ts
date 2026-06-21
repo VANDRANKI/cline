@@ -70,5 +70,18 @@ export function combineCommandSequences(messages: ClineMessage[]): ClineMessage[
 			return msg
 		})
 }
+
+/**
+ * Header string injected between the command text and its terminal output when
+ * {@link combineCommandSequences} merges a `command` message with its
+ * `command_output` followers. Rendered in the chat UI as a section divider.
+ */
 export const COMMAND_OUTPUT_STRING = "Output:"
+
+/**
+ * Sentinel string used to identify messages that represent a request for the
+ * user to approve launching an external application (e.g. opening a browser).
+ * Present in `command_output` message text when the extension yields control
+ * to an external process and waits for the user's confirmation.
+ */
 export const COMMAND_REQ_APP_STRING = "REQ_APP"
