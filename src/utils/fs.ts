@@ -80,18 +80,22 @@ export async function getFileSizeInKB(filePath: string): Promise<number> {
 }
 
 /**
- * Writes content to a file
- * @param filePath - Absolute path to the file
- * @param content - Content to write (string or Uint8Array)
- * @param encoding - Text encoding (default: 'utf8')
- * @returns A promise that resolves when the file is written
+ * Writes content to a file.
+ *
+ * Delegates to `fs.writeFile`. When `content` is a `Uint8Array` the encoding
+ * parameter is ignored and the raw bytes are written directly; otherwise the
+ * content is written as text with the specified encoding.
+ *
+ * @param filePath - Absolute path to the file.
+ * @param content - Content to write (string or Uint8Array).
+ * @param encoding - Text encoding used when `content` is a string (default: `'utf8'`).
+ * @returns A promise that resolves when the file has been fully written.
  */
 export async function writeFile(
 	filePath: string,
 	content: string | Uint8Array,
 	encoding: BufferEncoding = "utf8",
 ): Promise<void> {
-	console.log("[DEBUG] writing file:", filePath, content.length, encoding)
 	if (content instanceof Uint8Array) {
 		await fs.writeFile(filePath, content)
 	} else {
@@ -153,6 +157,18 @@ export const readDirectory = async (directoryPath: string, excludedPaths: string
 	}
 }
 
+/**
+ * Resolves the absolute path of a named binary on the current platform.
+ *
+ * On Windows the `.exe` extension is automatically appended to `name` before
+ * delegating to `HostProvider.get().getBinaryLocation`. The resolved path is
+ * verified to exist before being returned.
+ *
+ * @param name - Platform-agnostic binary name (e.g. `"git"`, `"node"`). Do not
+ *   include the `.exe` suffix — it is added automatically on Windows.
+ * @returns The absolute path to the binary.
+ * @throws {Error} If the binary cannot be found at the resolved location.
+ */
 export async function getBinaryLocation(name: string): Promise<string> {
 	const binName = IS_WINDOWS ? `${name}.exe` : name
 	const location = await HostProvider.get().getBinaryLocation(binName)
