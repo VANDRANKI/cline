@@ -32,26 +32,51 @@ English | <a href="https://github.com/cline/cline/blob/main/locales/es/README.md
 
 Meet Cline, an AI assistant that can use your **CLI** a**N**d **E**ditor.
 
-Thanks to [Claude Sonnet's agentic coding capabilities](https://www.anthropic.com/claude/sonnet), Cline can handle complex software development tasks step-by-step. With tools that let him create & edit files, explore large projects, use the browser, and execute terminal commands (after you grant permission), he can assist you in ways that go beyond code completion or tech support. Cline can even use the Model Context Protocol (MCP) to create new tools and extend his own capabilities. While autonomous AI scripts traditionally run in sandboxed environments, this extension provides a human-in-the-loop GUI to approve every file change and terminal command, providing a safe and accessible way to explore the potential of agentic AI.
+Thanks to [Claude Sonnet's agentic coding capabilities](https://www.anthropic.com/claude/sonnet), Cline can handle complex software development tasks step-by-step. With tools that let it create & edit files, explore large projects, use the browser, and execute terminal commands (after you grant permission), Cline can assist you in ways that go beyond code completion or tech support. Cline can even use the Model Context Protocol (MCP) to create new tools and extend its own capabilities. While autonomous AI scripts traditionally run in sandboxed environments, this extension provides a human-in-the-loop GUI to approve every file change and terminal command, providing a safe and accessible way to explore the potential of agentic AI.
 
 1. Enter your task and add images to convert mockups into functional apps or fix bugs with screenshots.
 2. Cline starts by analyzing your file structure & source code ASTs, running regex searches, and reading relevant files to get up to speed in existing projects. By carefully managing what information is added to context, Cline can provide valuable assistance even for large, complex projects without overwhelming the context window.
-3. Once Cline has the information he needs, he can:
-    - Create and edit files + monitor linter/compiler errors along the way, letting him proactively fix issues like missing imports and syntax errors on his own.
-    - Execute commands directly in your terminal and monitor their output as he works, letting him e.g., react to dev server issues after editing a file.
-    - For web development tasks, Cline can launch the site in a headless browser, click, type, scroll, and capture screenshots + console logs, allowing him to fix runtime errors and visual bugs.
-4. When a task is completed, Cline will present the result to you with a terminal command like `open -a "Google Chrome" index.html`, which you run with a click of a button.
+3. Once Cline has the information it needs, it can:
+    - Create and edit files and monitor linter/compiler errors along the way, letting it proactively fix issues like missing imports and syntax errors.
+    - Execute commands directly in your terminal and monitor their output as it works, letting it react to dev server issues after editing a file.
+    - For web development tasks, Cline can launch the site in a headless browser, click, type, scroll, and capture screenshots and console logs, allowing it to fix runtime errors and visual bugs.
+4. When a task is completed, Cline will present the result to you with a terminal command like `open -a "Google Chrome" index.html`, which you run with a click of a button.
 
 > [!TIP]
-> Follow [this guide](https://docs.cline.bot/features/customization/opening-cline-in-sidebar) to open Cline on the right side of your editor. This lets you use Cline side-by-side with your file explorer, and see how he changes your workspace more clearly.
+> Follow [this guide](https://docs.cline.bot/features/customization/opening-cline-in-sidebar) to open Cline on the right side of your editor. This lets you use Cline side-by-side with your file explorer, and see how it changes your workspace more clearly.
+
+---
+
+## Installation
+
+### Prerequisites
+
+- [Visual Studio Code](https://code.visualstudio.com/) v1.93 or later (required for terminal shell integration)
+- An API key from a supported provider (Anthropic, OpenAI, OpenRouter, etc.) — see [Supported Providers](#supported-providers) below
+
+### Steps
+
+1. **Install the extension** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev):
+   - Open VS Code and press `Ctrl+P` (Windows/Linux) or `Cmd+P` (macOS)
+   - Paste: `ext install saoudrizwan.claude-dev` and press Enter
+   - Alternatively, search for **"Cline"** in the Extensions panel (`Ctrl+Shift+X` / `Cmd+Shift+X`)
+
+2. **Open the Cline panel** by clicking the Cline icon in the Activity Bar on the left (or press `Ctrl+Shift+P` and search "Cline: Open").
+
+3. **Configure your API key**: On first launch, Cline will prompt you to select a provider and enter your API key. You can update this at any time via the settings gear icon in the Cline panel.
+
+4. **Start your first task**: Type a request in the chat input and press Enter. Cline will ask for permission before making any changes to your files or running terminal commands.
+
+> [!NOTE]
+> For a detailed walkthrough aimed at developers new to AI-assisted coding, see the [Getting Started guide](https://docs.cline.bot/getting-started/for-new-coders).
 
 ---
 
 <img align="right" width="340" src="https://github.com/user-attachments/assets/3cf21e04-7ce9-4d22-a7b9-ba2c595e88a4">
 
-### Use any API and Model
+### Supported Providers
 
-Cline supports API providers like OpenRouter, Anthropic, OpenAI, Google Gemini, AWS Bedrock, Azure, GCP Vertex, Cerebras and Groq. You can also configure any OpenAI compatible API, or use a local model through LM Studio/Ollama. If you're using OpenRouter, the extension fetches their latest model list, allowing you to use the newest models as soon as they're available.
+Cline supports API providers like OpenRouter, Anthropic, OpenAI, Google Gemini, AWS Bedrock, Azure, GCP Vertex, Cerebras and Groq. You can also configure any OpenAI-compatible API, or use a local model through LM Studio/Ollama. If you are using OpenRouter, the extension fetches their latest model list, allowing you to use the newest models as soon as they are available.
 
 The extension also keeps track of total tokens and API usage cost for the entire task loop and individual requests, keeping you informed of spend every step of the way.
 
@@ -63,9 +88,9 @@ The extension also keeps track of total tokens and API usage cost for the entire
 
 ### Run Commands in Terminal
 
-Thanks to the new [shell integration updates in VSCode v1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api), Cline can execute commands directly in your terminal and receive the output. This allows him to perform a wide range of tasks, from installing packages and running build scripts to deploying applications, managing databases, and executing tests, all while adapting to your dev environment & toolchain to get the job done right.
+Thanks to the new [shell integration updates in VSCode v1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api), Cline can execute commands directly in your terminal and receive the output. This allows it to perform a wide range of tasks, from installing packages and running build scripts to deploying applications, managing databases, and executing tests, all while adapting to your dev environment and toolchain to get the job done right.
 
-For long running processes like dev servers, use the "Proceed While Running" button to let Cline continue in the task while the command runs in the background. As Cline works he’ll be notified of any new terminal output along the way, letting him react to issues that may come up, such as compile-time errors when editing files.
+For long running processes like dev servers, use the "Proceed While Running" button to let Cline continue in the task while the command runs in the background. As Cline works it will be notified of any new terminal output along the way, letting it react to issues that may come up, such as compile-time errors when editing files.
 
 <!-- Transparent pixel to create line break after floating image -->
 
@@ -75,7 +100,7 @@ For long running processes like dev servers, use the "Proceed While Running" but
 
 ### Create and Edit Files
 
-Cline can create and edit files directly in your editor, presenting you a diff view of the changes. You can edit or revert Cline's changes directly in the diff view editor, or provide feedback in chat until you're satisfied with the result. Cline also monitors linter/compiler errors (missing imports, syntax errors, etc.) so he can fix issues that come up along the way on his own.
+Cline can create and edit files directly in your editor, presenting you a diff view of the changes. You can edit or revert Cline's changes directly in the diff view editor, or provide feedback in chat until you are satisfied with the result. Cline also monitors linter/compiler errors (missing imports, syntax errors, etc.) so it can fix issues that come up along the way.
 
 All changes made by Cline are recorded in your file's Timeline, providing an easy way to track and revert modifications if needed.
 
@@ -87,9 +112,9 @@ All changes made by Cline are recorded in your file's Timeline, providing an eas
 
 ### Use the Browser
 
-With Claude Sonnet's new [Computer Use](https://www.anthropic.com/news/3-5-models-and-computer-use) capability, Cline can launch a browser, click elements, type text, and scroll, capturing screenshots and console logs at each step. This allows for interactive debugging, end-to-end testing, and even general web use! This gives him autonomy to fixing visual bugs and runtime issues without you needing to handhold and copy-pasting error logs yourself.
+With Claude Sonnet's [Computer Use](https://www.anthropic.com/news/3-5-models-and-computer-use) capability, Cline can launch a browser, click elements, type text, and scroll, capturing screenshots and console logs at each step. This allows for interactive debugging, end-to-end testing, and even general web use. This gives it autonomy to fix visual bugs and runtime issues without you needing to handhold and copy-paste error logs yourself.
 
-Try asking Cline to "test the app", and watch as he runs a command like `npm run dev`, launches your locally running dev server in a browser, and performs a series of tests to confirm that everything works. [See a demo here.](https://x.com/sdrzn/status/1850880547825823989)
+Try asking Cline to "test the app", and watch as it runs a command like `npm run dev`, launches your locally running dev server in a browser, and performs a series of tests to confirm that everything works. [See a demo here.](https://x.com/sdrzn/status/1850880547825823989)
 
 <!-- Transparent pixel to create line break after floating image -->
 
@@ -99,7 +124,7 @@ Try asking Cline to "test the app", and watch as he runs a command like `npm run
 
 ### "add a tool that..."
 
-Thanks to the [Model Context Protocol](https://github.com/modelcontextprotocol), Cline can extend his capabilities through custom tools. While you can use [community-made servers](https://github.com/modelcontextprotocol/servers), Cline can instead create and install tools tailored to your specific workflow. Just ask Cline to "add a tool" and he will handle everything, from creating a new MCP server to installing it into the extension. These custom tools then become part of Cline's toolkit, ready to use in future tasks.
+Thanks to the [Model Context Protocol](https://github.com/modelcontextprotocol), Cline can extend its capabilities through custom tools. While you can use [community-made servers](https://github.com/modelcontextprotocol/servers), Cline can instead create and install tools tailored to your specific workflow. Just ask Cline to "add a tool" and it will handle everything, from creating a new MCP server to installing it into the extension. These custom tools then become part of Cline's toolkit, ready to use in future tasks.
 
 -   "add a tool that fetches Jira tickets": Retrieve ticket ACs and put Cline to work
 -   "add a tool that manages AWS EC2s": Check server metrics and scale instances up or down
@@ -113,13 +138,13 @@ Thanks to the [Model Context Protocol](https://github.com/modelcontextprotocol),
 
 ### Add Context
 
-**`@url`:** Paste in a URL for the extension to fetch and convert to markdown, useful when you want to give Cline the latest docs
+**`@url`:** Paste in a URL for the extension to fetch and convert to markdown, useful when you want to give Cline the latest docs
 
-**`@problems`:** Add workspace errors and warnings ('Problems' panel) for Cline to fix
+**`@problems`:** Add workspace errors and warnings (from the 'Problems' panel) for Cline to fix
 
-**`@file`:** Adds a file's contents so you don't have to waste API requests approving read file (+ type to search files)
+**`@file`:** Adds a file's contents so you don't have to waste API requests approving read file (type to search files)
 
-**`@folder`:** Adds folder's files all at once to speed up your workflow even more
+**`@folder`:** Adds all files in a folder at once to speed up your workflow even more
 
 <!-- Transparent pixel to create line break after floating image -->
 
@@ -136,6 +161,27 @@ For example, when working with a local web server, you can use 'Restore Workspac
 <!-- Transparent pixel to create line break after floating image -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
+
+## Troubleshooting
+
+### Extension not appearing in VS Code
+
+- Ensure VS Code is version 1.93 or later (`Help > About`)
+- Try reloading the window: `Ctrl+Shift+P` → "Developer: Reload Window"
+- Check the Output panel (`View > Output`) and select "Cline" from the dropdown for error messages
+
+### API key errors
+
+- Double-check that the API key is correct and has not expired
+- Ensure your account has sufficient credits/quota with the provider
+- If using OpenRouter, confirm the selected model is available for your plan
+
+### Terminal commands not executing
+
+- Verify your shell has integration enabled: `Ctrl+Shift+P` → "Terminal: Select Default Profile" and relaunch the terminal
+- Some restricted environments (remote SSH, WSL without configuration) may require additional setup — see the [docs](https://docs.cline.bot) for details
+
+---
 
 ## Contributing
 
