@@ -24,11 +24,27 @@ import { telemetryService } from "./services/telemetry"
 import { PostHogClientProvider } from "./services/telemetry/providers/posthog/PostHogClientProvider"
 import { ShowMessageType } from "./shared/proto/host/window"
 import { getLatestAnnouncementId } from "./utils/announcements"
+
 /**
- * Performs intialization for Cline that is common to all platforms.
+ * Performs initialization for Cline that is common to all platforms.
  *
- * @param context
- * @returns The webview provider
+ * This function runs the full startup sequence:
+ * 1. Initializes persistent state via `StateManager`
+ * 2. Sets up telemetry and feature flags
+ * 3. Runs all one-time data migrations (custom instructions, task history, hooks, etc.)
+ * 4. Creates and returns the webview provider used to render the Cline panel
+ * 5. Displays a version-update announcement if the extension was just updated
+ * 6. Fetches active banners from the remote API
+ *
+ * If `StateManager` initialization fails (e.g., corrupted global state), the function
+ * shows an error notification and continues rather than throwing, so the extension can
+ * still partially load.
+ *
+ * @param context - The VS Code extension context provided by the activation event.
+ *   Used to read/write global and workspace state, register disposables, and
+ *   resolve extension URIs.
+ * @returns A promise that resolves to the {@link WebviewProvider} instance responsible
+ *   for managing the Cline sidebar panel and its associated controller.
  */
 export async function initialize(context: vscode.ExtensionContext): Promise<WebviewProvider> {
 	try {
@@ -84,7 +100,22 @@ export async function initialize(context: vscode.ExtensionContext): Promise<Webv
 	return webview
 }
 
-async function showVersionUpdateAnnouncement(context: vscode.ExtensionContext) {
+/**
+ * Shows a notification to the user when the extension has been updated to a new version.
+ *
+ * Compares the current extension version (from the extension manifest) against the
+ * version stored in global state from the previous session. If they differ — or if no
+ * previous version is stored (fresh install) — the function checks whether there is a
+ * new announcement to surface. When a new announcement exists, it displays either a
+ * "Welcome" message (first install) or an "Updated" message (upgrade), then persists
+ * the current version so the notification is not shown again until the next update.
+ *
+ * @param context - The VS Code extension context used to read and write global state
+ *   keys `"clineVersion"` and `"lastShownAnnouncementId"`.
+ * @returns A promise that resolves once the version check and any state updates are
+ *   complete. Errors during the check are caught and logged; they do not propagate.
+ */
+async function showVersionUpdateAnnouncement(context: vscode.ExtensionContext): Promise<void> {
 	// Version checking for autoupdate notification
 	const currentVersion = ExtensionRegistryInfo.version
 	const previousVersion = context.globalState.get<string>("clineVersion")
@@ -118,6 +149,20 @@ async function showVersionUpdateAnnouncement(context: vscode.ExtensionContext) {
 
 /**
  * Performs cleanup when Cline is deactivated that is common to all platforms.
+ *
+ * This function is called by each platform's `deactivate()` hook (VS Code extension
+ * host, standalone server, etc.) and ensures resources are released in a consistent
+ * order:
+ *
+ * 1. Stops the audio recording service to prevent orphaned microphone processes.
+ * 2. Disposes the PostHog analytics client.
+ * 3. Flushes and disposes the telemetry service.
+ * 4. Disposes the error reporting service.
+ * 5. Stops the feature flags polling loop.
+ * 6. Disposes all active {@link WebviewProvider} instances and their associated
+ *    controllers, closing any open Cline panels.
+ *
+ * @returns A promise that resolves once all async disposal steps are complete.
  */
 export async function tearDown(): Promise<void> {
 	// Clean up audio recording service to ensure no orphaned processes
