@@ -25,7 +25,7 @@ export async function deleteRuleFile(controller: Controller, request: RuleFileRe
 			rulePath: typeof request.rulePath === "string" ? request.rulePath : `Invalid: ${typeof request.rulePath}`,
 			type: typeof request.type === "string" ? request.type : `Invalid: ${typeof request.type}`,
 		})
-		throw new Error("Missing or invalid parameters")
+		throw new Error("Missing or invalid parameters for deleteRuleFile")
 	}
 
 	const result = await deleteRuleFileImpl(controller, request.rulePath, request.isGlobal, request.type)

@@ -29,7 +29,7 @@ export async function createRuleFile(controller: Controller, request: RuleFileRe
 			filename: typeof request.filename === "string" ? request.filename : `Invalid: ${typeof request.filename}`,
 			type: typeof request.type === "string" ? request.type : `Invalid: ${typeof request.type}`,
 		})
-		throw new Error("Missing or invalid parameters")
+		throw new Error("Missing or invalid parameters for createRuleFile")
 	}
 
 	const cwd = await getCwd(getDesktopDir())
