@@ -14,6 +14,12 @@ export const ClineHeaders = {
 } as const
 export type ClineHeaderName = (typeof ClineHeaders)[keyof typeof ClineHeaders]
 
+/**
+ * Builds the base set of Cline request headers (platform, client, and core version info)
+ * sent with requests to the Cline backend. Falls back to "unknown" for host-derived values
+ * if the HostBridge EnvService call fails.
+ * @returns A record of header name to value pairs
+ */
 export async function buildBasicClineHeaders(): Promise<Record<string, string>> {
 	const headers: Record<string, string> = {}
 	try {
@@ -34,6 +40,11 @@ export async function buildBasicClineHeaders(): Promise<Record<string, string>> 
 	return headers
 }
 
+/**
+ * Extends {@link buildBasicClineHeaders} with additional context headers, such as whether
+ * the current VS Code session is a multi-root workspace.
+ * @returns A record of header name to value pairs, including the basic Cline headers
+ */
 export async function buildClineExtraHeaders(): Promise<Record<string, string>> {
 	const headers = await buildBasicClineHeaders()
 
