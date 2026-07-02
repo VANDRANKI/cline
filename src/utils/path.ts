@@ -51,7 +51,14 @@ String.prototype.toPosix = function (this: string): string {
 	return toPosixPath(this)
 }
 
-// Safe path comparison that works across different platforms
+/**
+ * Safe path comparison that works across different platforms.
+ * Normalizes both paths (resolving `.`/`..` segments, removing duplicate/trailing slashes) before
+ * comparing, and performs a case-insensitive comparison on Windows.
+ * @param path1 The first path to compare
+ * @param path2 The second path to compare
+ * @returns true if both paths refer to the same location (or both are undefined/empty)
+ */
 export function arePathsEqual(path1?: string, path2?: string): boolean {
 	if (!path1 && !path2) {
 		return true
@@ -80,6 +87,13 @@ function normalizePath(p: string): string {
 	return normalized
 }
 
+/**
+ * Produces a human-readable path for display purposes: the basename if relPath resolves to cwd
+ * itself, the path relative to cwd if it's contained within it, or the absolute path otherwise.
+ * @param cwd The current working directory to resolve relPath against
+ * @param relPath The (possibly relative) path to make readable
+ * @returns A posix-style path suitable for display
+ */
 export function getReadablePath(cwd: string, relPath?: string): string {
 	relPath = relPath || ""
 	// path.resolve is flexible in that it will resolve relative paths like '../../' to the cwd and even ignore the cwd if the relPath is actually an absolute path
@@ -104,19 +118,31 @@ export function getReadablePath(cwd: string, relPath?: string): string {
 	}
 }
 
-// Returns the path of the first workspace directory, or the defaultCwdPath if there is no workspace open.
+/**
+ * Returns the path of the first workspace directory, or the defaultCwdPath if there is no workspace open.
+ * @param defaultCwd The path to fall back to if no workspace is open
+ * @returns The resolved workspace path, or defaultCwd
+ */
 export async function getCwd(defaultCwd = ""): Promise<string> {
 	const workspacePaths = await HostProvider.workspace.getWorkspacePaths({})
 	return workspacePaths.paths.shift() || defaultCwd
 }
 
+/**
+ * Resolves the absolute path to the user's Desktop directory.
+ * @returns The absolute path to the Desktop directory
+ */
 export function getDesktopDir() {
 	const desktopResult = workspaceResolver.resolveWorkspacePath(os.homedir(), "Desktop", "Utils.path.getDesktopDir")
 	return typeof desktopResult === "string" ? desktopResult : desktopResult.absolutePath
 }
 
-// Returns the workspace path of the file in the current editor.
-// If there is no open file, it returns the top level workspace directory.
+/**
+ * Returns the workspace path of the file in the current editor.
+ * If there is no open file, it returns the top level workspace directory.
+ * @param defaultCwd The path to fall back to if no workspace or active editor is available
+ * @returns The workspace path containing the active editor's file, or defaultCwd
+ */
 export async function getWorkspacePath(defaultCwd = ""): Promise<string> {
 	const currentFilePath = (await HostProvider.window.getActiveEditor({})).filePath
 	if (!currentFilePath) {
@@ -132,6 +158,11 @@ export async function getWorkspacePath(defaultCwd = ""): Promise<string> {
 	return await getCwd(defaultCwd)
 }
 
+/**
+ * Determines if the given path is located inside any of the currently open workspace directories.
+ * @param pathToCheck The path to check
+ * @returns true if pathToCheck resolves to a location inside a workspace directory
+ */
 export async function isLocatedInWorkspace(pathToCheck: string = ""): Promise<boolean> {
 	const workspacePaths = (await HostProvider.workspace.getWorkspacePaths({})).paths
 	for (const workspacePath of workspacePaths) {
@@ -148,7 +179,12 @@ export async function isLocatedInWorkspace(pathToCheck: string = ""): Promise<bo
 	return false
 }
 
-// Returns true if `pathToCheck` is located inside `dirPath`.
+/**
+ * Returns true if `pathToCheck` is located inside `dirPath`.
+ * @param dirPath The candidate parent directory
+ * @param pathToCheck The path to check
+ * @returns true if pathToCheck is located inside dirPath
+ */
 export function isLocatedInPath(dirPath: string, pathToCheck: string): boolean {
 	if (!dirPath || !pathToCheck) {
 		return false
@@ -174,6 +210,12 @@ export function isLocatedInPath(dirPath: string, pathToCheck: string): boolean {
 	return true
 }
 
+/**
+ * Converts an absolute path to a path relative to the workspace directory that contains it.
+ * If the path is not located inside any open workspace, it is returned unchanged.
+ * @param filePath The absolute path to convert
+ * @returns The path relative to its containing workspace, or filePath if it is outside all workspaces
+ */
 export async function asRelativePath(filePath: string): Promise<string> {
 	const workspacePaths = await HostProvider.workspace.getWorkspacePaths({})
 	for (const workspacePath of workspacePaths.paths) {
