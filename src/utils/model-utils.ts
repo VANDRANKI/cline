@@ -3,6 +3,12 @@ import { AnthropicModelId, anthropicModels } from "@/shared/api"
 
 const CLAUDE_VERSION_MATCH_REGEX = /[-_ ]([\d](?:\.[05])?)[-_ ]?/
 
+/**
+ * Determines if the given provider is one of the providers that generally offers "next-gen" models.
+ * This is a provider-level check; use `isNextGenModelFamily` to check a specific model id instead.
+ * @param providerInfo The provider information to check
+ * @returns true if the provider is known to offer next-gen models, false otherwise
+ */
 export function isNextGenModelProvider(providerInfo: ApiProviderInfo): boolean {
 	const providerId = normalize(providerInfo.providerId)
 	return [
@@ -20,6 +26,12 @@ export function isNextGenModelProvider(providerInfo: ApiProviderInfo): boolean {
 	].some((id) => providerId === id)
 }
 
+/**
+ * Determines if the given model is known not to support webp image inputs.
+ * Currently only Grok models are excluded.
+ * @param apiHandlerModel The model to check
+ * @returns true if the model does not support webp images, false otherwise
+ */
 export function modelDoesntSupportWebp(apiHandlerModel: ApiHandlerModel): boolean {
 	const modelId = apiHandlerModel.id.toLowerCase()
 	return modelId.includes("grok")
