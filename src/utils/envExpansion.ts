@@ -60,11 +60,11 @@ export function expandEnvironmentVariables<T>(value: T): T {
 
 	// Handle objects (but not null)
 	if (value && typeof value === "object") {
-		const result: any = {}
+		const result: Record<string, unknown> = {}
 		for (const [key, val] of Object.entries(value)) {
 			result[key] = expandEnvironmentVariables(val)
 		}
-		return result
+		return result as T
 	}
 
 	// Return primitives unchanged (numbers, booleans, null, undefined)
