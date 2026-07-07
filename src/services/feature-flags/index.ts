@@ -14,7 +14,6 @@ let _featureFlagsServiceInstance: FeatureFlagsService | null = null
 
 /**
  * Get the singleton feature flags service instance
- * @param distinctId Optional distinct ID for the feature flags provider
  * @returns FeatureFlagsService instance
  */
 export function getFeatureFlagsService(): FeatureFlagsService {
