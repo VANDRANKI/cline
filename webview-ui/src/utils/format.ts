@@ -1,5 +1,10 @@
 import prettyBytes from "pretty-bytes"
 
+/**
+ * Formats a large number using b/m/k suffixes (billions, millions, thousands).
+ * @param num - The number to format
+ * @returns The abbreviated number as a string, e.g. "1.5m"
+ */
 export function formatLargeNumber(num: number): string {
 	if (num >= 1e9) {
 		return (num / 1e9).toFixed(1) + "b"
@@ -13,7 +18,11 @@ export function formatLargeNumber(num: number): string {
 	return num.toString()
 }
 
-// Helper to format cents as dollars with 2 decimal places
+/**
+ * Formats cents as a dollar amount with 2 decimal places.
+ * @param cents - The amount in cents, or undefined
+ * @returns The dollar amount as a string (e.g. "1.23"), or an empty string if `cents` is undefined
+ */
 export function formatDollars(cents?: number): string {
 	if (cents === undefined) {
 		return ""
@@ -40,6 +49,11 @@ export function formatCreditsBalance(microcredits: number): number {
 	return microcredits / 10000
 }
 
+/**
+ * Formats an ISO timestamp string as a localized date/time (e.g. "07/08/26, 1:23 PM").
+ * @param timestamp - An ISO 8601 timestamp string
+ * @returns The formatted date/time string
+ */
 export function formatTimestamp(timestamp: string): string {
 	const date = new Date(timestamp)
 
@@ -55,6 +69,11 @@ export function formatTimestamp(timestamp: string): string {
 	return dateFormatter.format(date)
 }
 
+/**
+ * Formats a byte count as a human-readable size string.
+ * @param bytes - The size in bytes, or undefined
+ * @returns The formatted size (e.g. "1.2 MB"), or "--kb" if `bytes` is undefined
+ */
 export function formatSize(bytes?: number) {
 	if (bytes === undefined) {
 		return "--kb"
@@ -62,6 +81,12 @@ export function formatSize(bytes?: number) {
 
 	return prettyBytes(bytes)
 }
+
+/**
+ * Formats a duration in seconds as a "minutes:seconds" string.
+ * @param seconds - The duration in seconds, or undefined
+ * @returns The formatted duration (e.g. "1:05"), or "--:--" if `seconds` is undefined
+ */
 export function formatSeconds(seconds?: number): string {
 	if (seconds === undefined) {
 		return "--:--"
