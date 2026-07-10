@@ -474,7 +474,8 @@ export class SapAiCoreHandler implements ApiHandler {
 				.filter((deployment: any) => deployment !== null)
 		} catch (error) {
 			console.error("Error fetching deployments:", error)
-			throw new Error("Failed to fetch deployments")
+			const errorMessage = error instanceof Error ? error.message : String(error)
+			throw new Error(`Failed to fetch deployments: ${errorMessage}`)
 		}
 	}
 

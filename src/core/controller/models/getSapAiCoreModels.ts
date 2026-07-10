@@ -93,7 +93,8 @@ async function fetchAiCoreDeploymentsAndOrchestration(
 		return { deployments, orchestrationAvailable }
 	} catch (error) {
 		console.error("Error fetching deployments:", error)
-		throw new Error("Failed to fetch deployments")
+		const errorMessage = error instanceof Error ? error.message : String(error)
+		throw new Error(`Failed to fetch deployments: ${errorMessage}`)
 	}
 }
 
