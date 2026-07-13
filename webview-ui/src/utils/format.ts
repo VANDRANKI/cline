@@ -1,5 +1,11 @@
 import prettyBytes from "pretty-bytes"
 
+/**
+ * Formats a large number into a compact human-readable string using b/m/k suffixes
+ * (e.g. 1500 -> "1.5k", 2500000 -> "2.5m").
+ * @param num The number to format
+ * @returns The formatted string
+ */
 export function formatLargeNumber(num: number): string {
 	if (num >= 1e9) {
 		return (num / 1e9).toFixed(1) + "b"
