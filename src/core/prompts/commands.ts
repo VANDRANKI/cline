@@ -79,7 +79,7 @@ ${
 	focusChainSettings?.enabled
 		? `- task_progress: (required) The current state of the task_progress list, with completed items marked. Important information on this parameter is as follows:
   1. XML schema matches that of prior task_progress lists.
-  2. All items are retained, with the exact same desciptive content as in prior occurences.
+  2. All items are retained, with the exact same descriptive content as in prior occurrences.
   3. All completed items are marked as completed.
   4. The only compenent of this list that can be changed is the completion state of invidiual items in the list`
 		: ""
