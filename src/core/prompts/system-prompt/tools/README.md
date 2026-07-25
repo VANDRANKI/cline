@@ -80,11 +80,14 @@ export const tool_name_variants = [claude, gpt];
 The following tools are currently registered:
 
 - `access_mcp_resource`
+- `act_mode_respond`
+- `apply_patch`
 - `ask_followup_question`
 - `attempt_completion`
 - `browser_action`
 - `execute_command`
 - `focus_chain`
+- `generate_explanation`
 - `list_code_definition_names`
 - `list_files`
 - `load_mcp_documentation`
@@ -94,7 +97,9 @@ The following tools are currently registered:
 - `replace_in_file`
 - `search_files`
 - `use_mcp_tool`
+- `use_skill`
 - `web_fetch` (exported as `get_web_fetch_variants`)
+- `web_search`
 - `write_to_file`
 
 ## Adding New Tools
