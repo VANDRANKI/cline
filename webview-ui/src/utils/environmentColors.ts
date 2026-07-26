@@ -28,6 +28,14 @@ export const getEnvironmentColor = (environment: Environment | undefined, type: 
 			: "var(--vscode-foreground)" // Default for production
 }
 
+/**
+ * Gets the Tailwind/CSS class or CSS variable string for the current environment.
+ * Mirrors `getEnvironmentColor` but returns class-based border values for Tailwind usage.
+ *
+ * @param environment - The current environment (local, staging, or production)
+ * @param type - The type of value needed: "border" for border classes, otherwise text/fill color
+ * @returns Tailwind/CSS variable string for the appropriate environment color
+ */
 export function getClineEnvironmentClassname(environment: Environment | undefined, type = "text") {
 	if (type === "border") {
 		switch (environment) {
