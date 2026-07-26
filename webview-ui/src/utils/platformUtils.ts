@@ -11,6 +11,12 @@ const platforms = {
 	linux: /linux/,
 }
 
+/**
+ * Detects the OS type from a raw platform identifier (e.g. `process.platform` or `navigator.platform`).
+ *
+ * @param platform - Raw platform string to match against Windows/macOS/Linux patterns
+ * @returns 'windows', 'mac', 'linux', or the `unknown` sentinel if no pattern matches
+ */
 export const detectOS = (platform: string) => {
 	let detectedOs = unknown
 	if (platform.match(platforms.windows)) {
