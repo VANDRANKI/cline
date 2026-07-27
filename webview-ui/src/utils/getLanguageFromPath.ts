@@ -80,9 +80,14 @@ const extensionToLanguage: { [key: string]: string } = {
 	ipynb: "jupyter", // Jupyter notebooks
 }
 
-// Example usage:
-// console.log(getLanguageFromPath('/path/to/file.js')); // Output: javascript
-
+/**
+ * Determines the syntax-highlighting language identifier for a file based on its extension.
+ * @param path File path or filename to inspect (only the extension is used)
+ * @returns The language identifier (e.g. "javascript", "python"), or undefined if the
+ * extension is unrecognized
+ * @example
+ * getLanguageFromPath('/path/to/file.js') // "javascript"
+ */
 export function getLanguageFromPath(path: string): string | undefined {
 	const extension = path.split(".").pop()?.toLowerCase() || ""
 	return extensionToLanguage[extension]
