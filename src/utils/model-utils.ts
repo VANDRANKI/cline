@@ -3,6 +3,12 @@ import { AnthropicModelId, anthropicModels } from "@/shared/api"
 
 const CLAUDE_VERSION_MATCH_REGEX = /[-_ ]([\d](?:\.[05])?)[-_ ]?/
 
+/**
+ * Determines if the given provider is one of the "next-gen" providers that
+ * support Cline's native tool-calling behavior (as opposed to legacy XML-based tool calls).
+ * @param providerInfo The provider and model information
+ * @returns true if the provider supports next-gen behavior
+ */
 export function isNextGenModelProvider(providerInfo: ApiProviderInfo): boolean {
 	const providerId = normalize(providerInfo.providerId)
 	return [
@@ -20,6 +26,13 @@ export function isNextGenModelProvider(providerInfo: ApiProviderInfo): boolean {
 	].some((id) => providerId === id)
 }
 
+/**
+ * Determines if the given model lacks support for webp images, so callers should
+ * fall back to a different image format when sending image content to it.
+ * Currently true for Grok models.
+ * @param apiHandlerModel The model to check
+ * @returns true if the model does not support webp images
+ */
 export function modelDoesntSupportWebp(apiHandlerModel: ApiHandlerModel): boolean {
 	const modelId = apiHandlerModel.id.toLowerCase()
 	return modelId.includes("grok")
