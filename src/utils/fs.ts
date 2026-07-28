@@ -153,6 +153,13 @@ export const readDirectory = async (directoryPath: string, excludedPaths: string
 	}
 }
 
+/**
+ * Resolves the on-disk location of a bundled binary for the current host platform.
+ *
+ * @param name - The binary's base name (without platform-specific extension).
+ * @returns A promise that resolves to the absolute path of the binary.
+ * @throws Error if the binary cannot be found at the resolved location.
+ */
 export async function getBinaryLocation(name: string): Promise<string> {
 	const binName = IS_WINDOWS ? `${name}.exe` : name
 	const location = await HostProvider.get().getBinaryLocation(binName)
