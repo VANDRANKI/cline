@@ -40,5 +40,10 @@ export async function readTextFromClipboard(): Promise<string> {
  */
 export async function openExternal(url: string): Promise<void> {
 	console.log("Opening browser:", url)
-	await open(url)
+	try {
+		await open(url)
+	} catch (error) {
+		const errorMessage = error instanceof Error ? error.message : String(error)
+		throw new Error(`Failed to open external URL: ${errorMessage}`)
+	}
 }
