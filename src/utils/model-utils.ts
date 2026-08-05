@@ -3,6 +3,13 @@ import { AnthropicModelId, anthropicModels } from "@/shared/api"
 
 const CLAUDE_VERSION_MATCH_REGEX = /[-_ ]([\d](?:\.[05])?)[-_ ]?/
 
+/**
+ * Determines if the given provider is one of the providers that can serve "next-gen" models
+ * (i.e. models capable of native tool calling). This checks the provider only, not the specific
+ * model — pair with `isNextGenModelFamily` to also confirm the selected model qualifies.
+ * @param providerInfo The provider and model information
+ * @returns true if the provider is in the list of next-gen capable providers, false otherwise
+ */
 export function isNextGenModelProvider(providerInfo: ApiProviderInfo): boolean {
 	const providerId = normalize(providerInfo.providerId)
 	return [
