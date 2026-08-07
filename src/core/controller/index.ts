@@ -72,7 +72,7 @@ export class Controller {
 	ocaAuthService: OcaAuthService
 	readonly stateManager: StateManager
 
-	// NEW: Add workspace manager (optional initially)
+	// Lazily initialized; see ensureWorkspaceManager/getWorkspaceManager below
 	private workspaceManager?: WorkspaceRootManager
 	private backgroundCommandRunning = false
 	private backgroundCommandTaskId?: string
