@@ -11,6 +11,11 @@ const platforms = {
 	linux: /linux/,
 }
 
+/**
+ * Detects the OS family from a platform identifier string (e.g. `process.platform`).
+ * @param platform - Platform identifier to match against known OS patterns
+ * @returns 'windows', 'mac', 'linux', or 'Unknown' if the platform cannot be determined
+ */
 export const detectOS = (platform: string) => {
 	let detectedOs = unknown
 	if (platform.match(platforms.windows)) {
@@ -23,6 +28,11 @@ export const detectOS = (platform: string) => {
 	return detectedOs
 }
 
+/**
+ * Determines the display label for the platform's meta/command key.
+ * @param platform - Platform identifier to match against known OS patterns
+ * @returns 'CMD' for macOS (and as a fallback), 'Win' for Windows, or 'Alt' for Linux
+ */
 export const detectMetaKeyChar = (platform: string) => {
 	if (platform.match(platforms.mac)) {
 		return "CMD"
