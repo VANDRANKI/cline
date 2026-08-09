@@ -53,6 +53,11 @@ export async function getContextForCommand(
 	return { controller, commandContext }
 }
 
+/**
+ * Focuses the chat input and returns the active sidebar webview instance.
+ * @param preserveEditorFocus When true, keeps focus on the editor instead of moving it to the webview
+ * @returns The active {@link WebviewProvider} instance
+ */
 export async function showWebview(preserveEditorFocus: boolean = true): Promise<WebviewProvider> {
 	await vscode.commands.executeCommand(ExtensionRegistryInfo.commands.FocusChatInput, preserveEditorFocus)
 
