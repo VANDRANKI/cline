@@ -23,16 +23,32 @@ export const VSC_DIFF_INSERTED_LINE_BACKGROUND = "--vscode-diffEditor-insertedLi
 export const VSC_INACTIVE_SELECTION_BACKGROUND = "--vscode-editor-inactiveSelectionBackground"
 export const VSC_TITLEBAR_INACTIVE_FOREGROUND = "--vscode-titleBar-inactiveForeground"
 
+/**
+ * Wraps a CSS custom property name in a `var()` reference.
+ * @param varName The CSS custom property name (e.g. "--vscode-input-background")
+ * @returns The CSS `var()` expression, e.g. "var(--vscode-input-background)"
+ */
 export function getAsVar(varName: string): string {
 	return `var(${varName})`
 }
 
+/**
+ * Parses a hex color string into its red, green, and blue components.
+ * @param hexColor A hex color string (e.g. "#ff8800"), with or without a leading "#"
+ * @returns An object with `r`, `g`, and `b` components in the range 0-255
+ */
 export function hexToRGB(hexColor: string): { r: number; g: number; b: number } {
 	const hex = hexColor.replace(/^#/, "").slice(0, 6)
 	const [r, g, b] = [0, 2, 4].map((offset) => parseInt(hex.slice(offset, offset + 2), 16))
 	return { r, g, b }
 }
 
+/**
+ * Resolves a CSS custom property (as currently rendered on the document root) to its hex color value.
+ * Supports both hex and `rgb()`/`rgba()`-style computed values.
+ * @param colorVar The CSS custom property name to resolve (e.g. "--vscode-foreground")
+ * @returns The resolved color as a hex string (e.g. "#ff8800")
+ */
 export function colorToHex(colorVar: string): string {
 	const value = getComputedStyle(document.documentElement).getPropertyValue(colorVar).trim()
 	if (value.startsWith("#")) {
