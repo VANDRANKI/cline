@@ -102,6 +102,12 @@ export async function selectFiles(imagesAllowed: boolean): Promise<{ images: str
 	return { images, files }
 }
 
+/**
+ * Determines the MIME type for an image file based on its extension.
+ * @param filePath Path to the file, used only to inspect its extension
+ * @returns The MIME type string for the file's extension
+ * @throws If the file extension is not one of the supported image types
+ */
 export function getMimeType(filePath: string): string {
 	const ext = path.extname(filePath).toLowerCase()
 	switch (ext) {
