@@ -4,6 +4,11 @@ import * as path from "path"
 import { HostProvider } from "@/hosts/host-provider"
 import { ShowMessageType } from "@/shared/proto/host/window"
 
+/**
+ * Decodes a base64 image data URI, writes it to a temporary file, and opens it
+ * in the host's default viewer for that file type.
+ * @param dataUri A base64-encoded image data URI (e.g. `data:image/png;base64,...`)
+ */
 export async function openImage(dataUri: string) {
 	const matches = dataUri.match(/^data:image\/([a-zA-Z]+);base64,(.+)$/)
 	if (!matches) {
@@ -29,6 +34,12 @@ export async function openImage(dataUri: string) {
 	}
 }
 
+/**
+ * Opens a file in the host editor at the given absolute path.
+ * @param absolutePath Absolute path to the file to open
+ * @param preserveFocus Whether to keep focus on the current editor instead of the newly opened one
+ * @param preview Whether to open the file in preview mode
+ */
 export async function openFile(absolutePath: string, preserveFocus: boolean = false, preview: boolean = false) {
 	try {
 		await HostProvider.window.showTextDocument({
