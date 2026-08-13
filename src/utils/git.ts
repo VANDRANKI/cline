@@ -39,6 +39,13 @@ async function checkGitRepoHasCommits(cwd: string): Promise<boolean> {
 	}
 }
 
+/**
+ * Searches the git log for commits matching a query, trying a message/hash
+ * grep first and falling back to a direct hash lookup if that finds nothing.
+ * @param query Search term to match against commit messages, or a commit hash.
+ * @param cwd Working directory of the git repository to search.
+ * @returns Up to 10 matching commits, or an empty array if none are found or git is unavailable.
+ */
 export async function searchCommits(query: string, cwd: string): Promise<GitCommit[]> {
 	try {
 		const isInstalled = await checkGitInstalled()
@@ -103,6 +110,13 @@ export async function searchCommits(query: string, cwd: string): Promise<GitComm
 	}
 }
 
+/**
+ * Builds a human-readable summary of a single commit, including its metadata,
+ * changed-file stats, and full diff.
+ * @param hash The commit hash to look up.
+ * @param cwd Working directory of the git repository.
+ * @returns A formatted summary string, or an explanatory message if the commit info could not be retrieved.
+ */
 export async function getCommitInfo(hash: string, cwd: string): Promise<string> {
 	try {
 		const isInstalled = await checkGitInstalled()
@@ -149,6 +163,12 @@ export async function getCommitInfo(hash: string, cwd: string): Promise<string> 
 	}
 }
 
+/**
+ * Describes the current uncommitted state of the working directory, combining
+ * `git status` with a diff against HEAD (or against nothing, for a fresh repo).
+ * @param cwd Working directory of the git repository.
+ * @returns A formatted description of pending changes, or an explanatory message if none exist.
+ */
 export async function getWorkingState(cwd: string): Promise<string> {
 	try {
 		const isInstalled = await checkGitInstalled()
@@ -185,6 +205,14 @@ export async function getWorkingState(cwd: string): Promise<string> {
 	}
 }
 
+/**
+ * Returns the diff of pending changes, preferring staged changes and falling
+ * back to unstaged changes against HEAD unless `stagedOnly` is set.
+ * @param cwd Working directory of the git repository.
+ * @param stagedOnly When true, only consider staged changes; skip the unstaged fallback.
+ * @returns The diff output, prefixed with the git command that produced it.
+ * @throws If git is unavailable, `cwd` is not a repository, or there are no changes to diff.
+ */
 export async function getGitDiff(cwd: string, stagedOnly = false): Promise<string> {
 	try {
 		const isInstalled = await checkGitInstalled()
@@ -221,6 +249,11 @@ export async function getGitDiff(cwd: string, stagedOnly = false): Promise<strin
 	}
 }
 
+/**
+ * Lists the configured git remotes for a repository.
+ * @param cwd Working directory of the git repository.
+ * @returns An array of `"name: url"` strings for each fetch remote, or an empty array if none exist or git is unavailable.
+ */
 export async function getGitRemoteUrls(cwd: string): Promise<string[]> {
 	try {
 		const isInstalled = await checkGitInstalled()
@@ -257,6 +290,11 @@ export async function getGitRemoteUrls(cwd: string): Promise<string[]> {
 	}
 }
 
+/**
+ * Gets the full hash of the current HEAD commit.
+ * @param cwd Working directory of the git repository.
+ * @returns The HEAD commit hash, or null if unavailable (no git, not a repo, or no commits).
+ */
 export async function getLatestGitCommitHash(cwd: string): Promise<string | null> {
 	try {
 		const isInstalled = await checkGitInstalled()
