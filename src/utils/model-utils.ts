@@ -3,6 +3,14 @@ import { AnthropicModelId, anthropicModels } from "@/shared/api"
 
 const CLAUDE_VERSION_MATCH_REGEX = /[-_ ]([\d](?:\.[05])?)[-_ ]?/
 
+/**
+ * Determines if the given provider supports native (provider-side) tool calling.
+ * This is a provider-level check only — combine with `isNextGenModelFamily()` (or a
+ * family-specific check) to confirm the selected model also qualifies as next-gen.
+ * See `isNativeToolCallingConfig()` and the system prompt variant configs for usage.
+ * @param providerInfo The provider and model information
+ * @returns true if the provider is one of the known next-gen providers
+ */
 export function isNextGenModelProvider(providerInfo: ApiProviderInfo): boolean {
 	const providerId = normalize(providerInfo.providerId)
 	return [
@@ -152,6 +160,12 @@ export function isNextGenModelFamily(id: string): boolean {
 	)
 }
 
+/**
+ * Determines if the given provider runs models locally (e.g. LM Studio, Ollama).
+ * Used to gate behaviors like the compact system prompt that only apply to local models.
+ * @param providerInfo The provider and model information
+ * @returns true if the provider is a known local-model provider
+ */
 export function isLocalModel(providerInfo: ApiProviderInfo): boolean {
 	const localProviders = ["lmstudio", "ollama"]
 	return localProviders.includes(normalize(providerInfo.providerId))
