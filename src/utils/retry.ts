@@ -1,6 +1,11 @@
 /**
  * TypeScript equivalent of the Go common.RetryOperation utility
  * Performs an operation with retry logic and timeout handling
+ * @param maxRetries Maximum number of attempts before giving up
+ * @param timeoutPerAttempt Timeout in milliseconds allotted to each individual attempt
+ * @param operation The async operation to perform, retried on failure or timeout
+ * @returns Promise resolving to the operation's result on success
+ * @throws Error if all attempts fail or time out
  */
 export async function retryOperation<T>(maxRetries: number, timeoutPerAttempt: number, operation: () => Promise<T>): Promise<T> {
 	let lastError: Error | undefined
